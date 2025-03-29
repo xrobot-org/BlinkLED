@@ -5,9 +5,5 @@
 ## Required Hardware
 led/LED/led1/LED1
 
-
-## Constructor Args
-- blink_cycle
-
 ## Repository
 https://github.com/xrobot-org/BlinkLED
