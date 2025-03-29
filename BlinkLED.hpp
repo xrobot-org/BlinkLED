@@ -1,13 +1,15 @@
 #pragma once
 
+// clang-format off
 /* === MODULE MANIFEST ===
 module_name: BlinkLED
-module_description: 控制 LED 闪烁的简单模块 / A simple module to control LED
-blinking constructor_args:
+module_description: 控制 LED 闪烁的简单模块 / A simple module to control LED blinking
+constructor_args:
   - blink_cycle: 250
 required_hardware: led/LED/led1/LED1
 repository: https://github.com/xrobot-org/BlinkLED
 === END MANIFEST === */
+// clang-format on
 
 #include "app_framework.hpp"
 #include "gpio.hpp"
