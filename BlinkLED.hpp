@@ -20,13 +20,40 @@ template <typename HardwareContainer>
 class BlinkLED : public LibXR::Application {
  public:
   BlinkLED(HardwareContainer &hw, LibXR::ApplicationManager &app,
-           uint32_t blink_cycle) {
+           uint32_t blink_cycle)
+      : led_(hw.template FindOrExit<LibXR::GPIO>(
+            {"led", "LED", "led1", "LED1"})),
+        timer_handle_(
+            LibXR::Timer::CreateTask(BlinkTaskFun, this, blink_cycle)) {
     UNUSED(app);
 
-    led_ = hw.template FindOrExit<LibXR::GPIO>({"led", "LED", "led1", "LED1"});
-    timer_handle_ = LibXR::Timer::CreateTask(BlinkTaskFun, this, blink_cycle);
     LibXR::Timer::Add(timer_handle_);
     LibXR::Timer::Start(timer_handle_);
+
+    auto error_callback = LibXR::Callback<const char *, uint32_t>::Create(
+        [](bool in_isr, BlinkLED<HardwareContainer> *led, const char *file,
+           uint32_t line) {
+          UNUSED(file);
+          UNUSED(line);
+
+          LibXR::Timer::Stop(led->timer_handle_);
+
+          if (!in_isr) {
+            while (true) {
+              led->led_->Write(false);
+              LibXR::Thread::Sleep(125);
+              led->led_->Write(true);
+              LibXR::Thread::Sleep(125);
+              led->led_->Write(false);
+              LibXR::Thread::Sleep(500);
+              led->led_->Write(true);
+              LibXR::Thread::Sleep(500);
+            }
+          }
+        },
+        this);
+
+    LibXR::Assert::RegisterFatalErrorCB(error_callback);
   }
 
   static void BlinkTaskFun(BlinkLED<HardwareContainer> *blink) {
