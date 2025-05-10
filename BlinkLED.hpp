@@ -16,10 +16,9 @@ repository: https://github.com/xrobot-org/BlinkLED
 #include "libxr_def.hpp"
 #include "timer.hpp"
 
-template <typename HardwareContainer>
 class BlinkLED : public LibXR::Application {
  public:
-  BlinkLED(HardwareContainer &hw, LibXR::ApplicationManager &app,
+  BlinkLED(LibXR::HardwareContainer &hw, LibXR::ApplicationManager &app,
            uint32_t blink_cycle)
       : led_(hw.template FindOrExit<LibXR::GPIO>(
             {"led", "LED", "led1", "LED1"})),
@@ -31,8 +30,7 @@ class BlinkLED : public LibXR::Application {
     LibXR::Timer::Start(timer_handle_);
 
     auto error_callback = LibXR::Callback<const char *, uint32_t>::Create(
-        [](bool in_isr, BlinkLED<HardwareContainer> *led, const char *file,
-           uint32_t line) {
+        [](bool in_isr, BlinkLED *led, const char *file, uint32_t line) {
           UNUSED(file);
           UNUSED(line);
 
@@ -56,7 +54,7 @@ class BlinkLED : public LibXR::Application {
     LibXR::Assert::RegisterFatalErrorCB(error_callback);
   }
 
-  static void BlinkTaskFun(BlinkLED<HardwareContainer> *blink) {
+  static void BlinkTaskFun(BlinkLED *blink) {
     blink->flag_ = !blink->flag_;
     blink->led_->Write(blink->flag_);
   }
