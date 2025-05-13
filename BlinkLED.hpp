@@ -29,7 +29,7 @@ class BlinkLED : public LibXR::Application {
     LibXR::Timer::Add(timer_handle_);
     LibXR::Timer::Start(timer_handle_);
 
-    auto error_callback = LibXR::Callback<const char *, uint32_t>::Create(
+    auto error_callback = LibXR::Assert::Callback::Create(
         [](bool in_isr, BlinkLED *led, const char *file, uint32_t line) {
           UNUSED(file);
           UNUSED(line);
