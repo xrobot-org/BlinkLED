@@ -51,7 +51,7 @@ class BlinkLED : public LibXR::Application {
         },
         this);
 
-    LibXR::Assert::RegisterFatalErrorCB(error_callback);
+    LibXR::Assert::RegisterFatalErrorCallback(error_callback);
   }
 
   static void BlinkTaskFun(BlinkLED *blink) {
