@@ -18,7 +18,7 @@ depends: []
 
 class BlinkLED : public LibXR::Application {
  public:
-  BlinkLED(LibXR::HardwareContainer &hw, LibXR::ApplicationManager &app,
+  BlinkLED(LibXR::HardwareContainer& hw, LibXR::ApplicationManager& app,
            uint32_t blink_cycle)
       : led_(hw.template FindOrExit<LibXR::GPIO>(
             {"led", "LED", "led1", "LED1"})),
@@ -30,7 +30,7 @@ class BlinkLED : public LibXR::Application {
     LibXR::Timer::Start(timer_handle_);
 
     auto error_callback = LibXR::Assert::Callback::Create(
-        [](bool in_isr, BlinkLED *led, const char *file, uint32_t line) {
+        [](bool in_isr, BlinkLED* led, const char* file, uint32_t line) {
           UNUSED(file);
           UNUSED(line);
 
@@ -54,7 +54,7 @@ class BlinkLED : public LibXR::Application {
     LibXR::Assert::RegisterFatalErrorCallback(error_callback);
   }
 
-  static void BlinkTaskFun(BlinkLED *blink) {
+  static void BlinkTaskFun(BlinkLED* blink) {
     blink->flag_ = !blink->flag_;
     blink->led_->Write(blink->flag_);
   }
@@ -63,6 +63,6 @@ class BlinkLED : public LibXR::Application {
 
  private:
   bool flag_ = false;
-  LibXR::GPIO *led_;
+  LibXR::GPIO* led_;
   LibXR::Timer::TimerHandle timer_handle_;
 };
