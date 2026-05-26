@@ -13,6 +13,8 @@ depends: []
 
 #include "app_framework.hpp"
 #include "gpio.hpp"
+#include "libxr_assert.hpp"
+#include "libxr_cb.hpp"
 #include "libxr_def.hpp"
 #include "timer.hpp"
 
@@ -29,7 +31,7 @@ class BlinkLED : public LibXR::Application {
     LibXR::Timer::Add(timer_handle_);
     LibXR::Timer::Start(timer_handle_);
 
-    auto error_callback = LibXR::Assert::Callback::Create(
+    auto error_callback = LibXR::Callback<const char*, uint32_t>::Create(
         [](bool in_isr, BlinkLED* led, const char* file, uint32_t line) {
           UNUSED(file);
           UNUSED(line);
