@@ -3,43 +3,41 @@
 // clang-format off
 /* === MODULE MANIFEST V2 ===
 module_description: 控制 LED 闪烁的简单模块 / A simple module to control LED blinking
-constructor_args:
-  - blink_cycle: 250
-template_args: []
-required_hardware: led/LED/led1/LED1
 depends: []
 === END MANIFEST === */
 // clang-format on
 
-#include "app_framework.hpp"
+#include <memory>
+
 #include "gpio.hpp"
 #include "libxr_assert.hpp"
 #include "libxr_cb.hpp"
 #include "libxr_def.hpp"
+#include "thread.hpp"
 #include "timer.hpp"
 
-class BlinkLED : public LibXR::Application {
+class BlinkLED
+{
  public:
-  BlinkLED(LibXR::HardwareContainer& hw, LibXR::ApplicationManager& app,
-           uint32_t blink_cycle)
-      : led_(hw.template FindOrExit<LibXR::GPIO>(
-            {"led", "LED", "led1", "LED1"})),
-        timer_handle_(
-            LibXR::Timer::CreateTask(BlinkTaskFun, this, blink_cycle)) {
-    UNUSED(app);
-
+  BlinkLED(LibXR::GPIO& external_led, uint32_t blink_cycle)
+      : led_(std::addressof(external_led)),
+        timer_handle_(LibXR::Timer::CreateTask(BlinkTaskFun, this, blink_cycle))
+  {
     LibXR::Timer::Add(timer_handle_);
     LibXR::Timer::Start(timer_handle_);
 
     auto error_callback = LibXR::Callback<const char*, uint32_t>::Create(
-        [](bool in_isr, BlinkLED* led, const char* file, uint32_t line) {
+        [](bool in_isr, BlinkLED* led, const char* file, uint32_t line)
+        {
           UNUSED(file);
           UNUSED(line);
 
           LibXR::Timer::Stop(led->timer_handle_);
 
-          if (!in_isr) {
-            while (true) {
+          if (!in_isr)
+          {
+            while (true)
+            {
               led->led_->Write(false);
               LibXR::Thread::Sleep(125);
               led->led_->Write(true);
@@ -56,12 +54,13 @@ class BlinkLED : public LibXR::Application {
     LibXR::Assert::RegisterFatalErrorCallback(error_callback);
   }
 
-  static void BlinkTaskFun(BlinkLED* blink) {
+  static void BlinkTaskFun(BlinkLED* blink)
+  {
     blink->flag_ = !blink->flag_;
     blink->led_->Write(blink->flag_);
   }
 
-  void OnMonitor() override {}
+  void OnMonitor() {}
 
  private:
   bool flag_ = false;
