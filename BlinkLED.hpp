@@ -19,8 +19,10 @@ depends: []
 class BlinkLED
 {
  public:
-  BlinkLED(LibXR::GPIO& external_led, uint32_t blink_cycle)
-      : led_(std::addressof(external_led)),
+  BlinkLED(
+      LibXR::GPIO& led,
+      uint32_t blink_cycle = 250)
+      : led_(std::addressof(led)),
         timer_handle_(LibXR::Timer::CreateTask(BlinkTaskFun, this, blink_cycle))
   {
     LibXR::Timer::Add(timer_handle_);
