@@ -62,8 +62,6 @@ class BlinkLED
     blink->led_->Write(blink->flag_);
   }
 
-  void OnMonitor() {}
-
  private:
   bool flag_ = false;
   LibXR::GPIO* led_;
