@@ -43,7 +43,7 @@ An instance written by `xrobot instance add xrobot-org/BlinkLED`, with `led` set
 ```yaml
 modules:
   - module: xrobot-org/BlinkLED
-    id: blinkled_0
+    id: blink_led
     args:
       - led: LED_B
       - blink_cycle: 250
