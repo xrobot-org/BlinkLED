@@ -2,7 +2,7 @@
 
 // clang-format off
 /* === MODULE MANIFEST V2 ===
-module_description: 控制 LED 闪烁的简单模块 / A simple module to control LED blinking
+module_description: LED 周期闪烁与致命错误指示模块 / Module that blinks an LED periodically and indicates fatal errors
 depends: []
 === END MANIFEST === */
 // clang-format on
