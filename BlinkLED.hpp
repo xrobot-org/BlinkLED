@@ -16,9 +16,24 @@ depends: []
 #include "thread.hpp"
 #include "timer.hpp"
 
+/**
+ * @brief LED 周期闪烁模块，并在致命错误时以特殊节奏指示故障。
+ *        Module that blinks an LED periodically and indicates fatal errors with a
+ *        distinct pattern.
+ */
 class BlinkLED
 {
  public:
+  /**
+   * @brief 构造 BlinkLED，创建并启动闪烁定时器，注册致命错误回调。
+   *        Construct BlinkLED, create and start the blink timer, and register the
+   *        fatal-error callback.
+   *
+   * @param led 驱动 LED 的 GPIO。
+   *            GPIO that drives the LED.
+   * @param blink_cycle 翻转周期，单位 ms。
+   *                    Toggle period in ms.
+   */
   BlinkLED(
       LibXR::GPIO& led,
       uint32_t blink_cycle = 250)
@@ -56,6 +71,13 @@ class BlinkLED
     LibXR::Assert::RegisterFatalErrorCallback(error_callback);
   }
 
+  /**
+   * @brief 定时器任务：翻转 LED 输出电平。
+   *        Timer task that toggles the LED output level.
+   *
+   * @param blink BlinkLED 实例。
+   *              BlinkLED instance.
+   */
   static void BlinkTaskFun(BlinkLED* blink)
   {
     blink->flag_ = !blink->flag_;
