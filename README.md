@@ -4,9 +4,9 @@ LED 周期闪烁与致命错误指示模块 / Module that blinks an LED periodic
 
 ## 1. 模块作用 / Purpose
 
-构造后，BlinkLED 创建一个 LibXR 定时器任务，每隔 `blink_cycle` 毫秒翻转一次 LED 的输出电平。同时向 LibXR 注册致命错误回调：发生致命错误时停止该定时器；回调不在中断上下文中运行时，进入无限循环，依次向 LED 写入 `false` 125 ms、`true` 125 ms、`false` 500 ms、`true` 500 ms，用与正常闪烁不同的节奏指示故障；在中断上下文中触发时只停止定时器。
+构造后，BlinkLED 创建一个 LibXR 定时器任务，每隔 `blink_cycle` 毫秒翻转一次 LED 的输出电平。同时向 LibXR 注册致命错误回调：发生致命错误时，回调停止该定时器并进入无限循环，依次向 LED 写入 `false` 125 ms、`true` 125 ms、`false` 500 ms、`true` 500 ms，用与正常闪烁不同的节奏指示故障。
 
-After construction, BlinkLED creates a LibXR timer task that toggles the LED output every `blink_cycle` milliseconds. It also registers a LibXR fatal-error callback. On a fatal error the callback stops the timer; when it does not run in interrupt context, it then loops forever writing `false` for 125 ms, `true` for 125 ms, `false` for 500 ms and `true` for 500 ms to the LED, a pattern that differs from the normal blinking and indicates the fault. When raised from interrupt context, the callback only stops the timer.
+After construction, BlinkLED creates a LibXR timer task that toggles the LED output every `blink_cycle` milliseconds. It also registers a LibXR fatal-error callback. On a fatal error the callback stops the timer and loops forever writing `false` for 125 ms, `true` for 125 ms, `false` for 500 ms and `true` for 500 ms to the LED, a pattern that differs from the normal blinking and indicates the fault.
 
 ## 2. 构造接口 / Constructor
 
